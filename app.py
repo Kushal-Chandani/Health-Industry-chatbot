@@ -55,10 +55,10 @@ valid_colors = [
     "blue", "green", "orange", "red", "violet", "yellow", "gray", "black", "white"
 ]
 
-color_name = "blue"  # Default to a valid color name
+color_name = "blue-70"  # Correct format
 
-if color_name not in valid_colors:
-    st.error(f"Invalid color name: {color_name}. Please choose from {valid_colors}.")
+if color_name.split('-')[0] not in valid_colors or not color_name.split('-')[1].isdigit():
+    st.error(f"Invalid color name: {color_name}. Please choose from {valid_colors} with intensity (e.g., 'blue-70').")
 else:
     colored_header(
         label="Healthcare Translation Web App",
