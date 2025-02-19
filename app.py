@@ -138,7 +138,9 @@ if st.session_state.get('error_message'):
 # Process the queue in the main thread
 while not queue.empty():
     text = queue.get()
-    st.session_state.original_transcript += f"{text} "
-    translated_text = translate_text(text, model_name)
-    st.session_state.translated_transcript += f"{translated_text} "
+    if text:
+        st.session_state.original_transcript += f"{text} "
+        translated_text = translate_text(text, model_name)
+        if translated_text:
+            st.session_state.translated_transcript += f"{translated_text} "
     st.experimental_rerun()
