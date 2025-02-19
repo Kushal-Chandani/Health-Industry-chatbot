@@ -82,14 +82,20 @@ def update_transcripts():
             st.session_state.translated_transcript += f"{translated_text} "
             st.experimental_rerun()
 
+def start_transcription():
+    st.session_state.transcribing = True
+    threading.Thread(target=update_transcripts).start()
+
+def stop_transcription():
+    st.session_state.transcribing = False
+
 col1, col2 = st.columns(2)
 with col1:
     if st.button("Start Transcription"):
-        st.session_state.transcribing = True
-        threading.Thread(target=update_transcripts).start()
+        start_transcription()
 with col2:
     if st.button("Stop Transcription"):
-        st.session_state.transcribing = False
+        stop_transcription()
 
 add_vertical_space(2)
 
