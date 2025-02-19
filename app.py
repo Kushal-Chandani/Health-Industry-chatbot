@@ -14,7 +14,7 @@ custom_css = """
     background-color: #f0f2f6;
     font-family: Arial, sans-serif;
 }
-.stTextInput > div > div > input {
+.stSelectbox > div > div > div {
     border: 2px solid #007bff;
     border-radius: 5px;
 }
@@ -25,6 +25,7 @@ custom_css = """
     border-radius: 5px;
     padding: 10px 20px;
     font-size: 16px;
+    margin: 5px;
 }
 .stButton > button:hover {
     background-color: #0056b3;
@@ -33,6 +34,7 @@ custom_css = """
     border: 2px solid #007bff;
     border-radius: 5px;
     font-size: 16px;
+    margin: 10px 0;
 }
 </style>
 """
@@ -75,7 +77,7 @@ if st.button("Start Transcription"):
 if st.button("Stop Transcription"):
     st.session_state.transcribing = False
 
-with st.spinner("Transcribing..."):
+with st.spinner("Transcribing...") if st.session_state.transcribing else st.empty():
     st.text_area("Original Transcript", value=st.session_state.original_transcript, height=200, key="original")
     st.text_area("Translated Transcript", value=st.session_state.translated_transcript, height=200, key="translated")
 
