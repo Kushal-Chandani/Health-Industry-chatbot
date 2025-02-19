@@ -50,11 +50,21 @@ custom_css = """
 """
 st.markdown(custom_css, unsafe_allow_html=True)
 
-colored_header(
-    label="Healthcare Translation Web App",
-    description="Translate spoken input in real-time with accurate transcription and audio playback.",
-    color_name="black-70"
-)
+# Ensure the color name is valid
+valid_colors = [
+    "blue", "green", "orange", "red", "violet", "yellow", "gray", "black", "white"
+]
+
+color_name = "blue"  # Default to a valid color name
+
+if color_name not in valid_colors:
+    st.error(f"Invalid color name: {color_name}. Please choose from {valid_colors}.")
+else:
+    colored_header(
+        label="Healthcare Translation Web App",
+        description="Translate spoken input in real-time with accurate transcription and audio playback.",
+        color_name=color_name
+    )
 
 input_language = st.selectbox("Input Language", ["English", "Spanish"])
 output_language = st.selectbox("Output Language", ["Spanish", "English"])
@@ -82,7 +92,7 @@ def update_transcripts():
             st.session_state.original_transcript += f"{text} "
             translated_text = translate_text(text, model_name)
             st.session_state.translated_transcript += f"{translated_text} "
-            st.experimental_rerun()
+            time.sleep(1)  # Sleep to avoid excessive reruns
 
 def start_transcription():
     st.session_state.transcribing = True
