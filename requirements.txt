@@ -1,4 +1,5 @@
 streamlit
+streamlit-extras
 transformers
 torch
 gtts

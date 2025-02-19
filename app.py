@@ -6,17 +6,20 @@ from transcription import transcribe_audio
 from translation import translate_text
 from gtts import gTTS
 import os
+from streamlit_extras.colored_header import colored_header
+from streamlit_extras.add_vertical_space import add_vertical_space
 
 # Custom CSS for styling
 custom_css = """
 <style>
 .stApp {
-    background-color: #f0f2f6;
-    font-family: Arial, sans-serif;
+    background-color: #f0f8ff;
+    font-family: 'Arial', sans-serif;
 }
 .stSelectbox > div > div > div {
     border: 2px solid #007bff;
     border-radius: 5px;
+    padding: 5px;
 }
 .stButton > button {
     background-color: #007bff;
@@ -35,12 +38,21 @@ custom_css = """
     border-radius: 5px;
     font-size: 16px;
     margin: 10px 0;
+    padding: 10px;
+    background-color: #ffffff;
+}
+.stAlert {
+    margin-top: 20px;
 }
 </style>
 """
 st.markdown(custom_css, unsafe_allow_html=True)
 
-st.title("Healthcare Translation Web App")
+colored_header(
+    label="Healthcare Translation Web App",
+    description="Translate spoken input in real-time with accurate transcription and audio playback.",
+    color_name="blue-70"
+)
 
 input_language = st.selectbox("Input Language", ["English", "Spanish"])
 output_language = st.selectbox("Output Language", ["Spanish", "English"])
@@ -70,18 +82,27 @@ def update_transcripts():
             st.session_state.translated_transcript += f"{translated_text} "
             st.experimental_rerun()
 
-if st.button("Start Transcription"):
-    st.session_state.transcribing = True
-    threading.Thread(target=update_transcripts).start()
+col1, col2 = st.columns(2)
+with col1:
+    if st.button("Start Transcription"):
+        st.session_state.transcribing = True
+        threading.Thread(target=update_transcripts).start()
+with col2:
+    if st.button("Stop Transcription"):
+        st.session_state.transcribing = False
 
-if st.button("Stop Transcription"):
-    st.session_state.transcribing = False
+add_vertical_space(2)
 
 with st.spinner("Transcribing...") if st.session_state.transcribing else st.empty():
     st.text_area("Original Transcript", value=st.session_state.original_transcript, height=200, key="original")
     st.text_area("Translated Transcript", value=st.session_state.translated_transcript, height=200, key="translated")
 
+add_vertical_space(2)
+
 def play_audio(text):
+    if not text.strip():
+        st.warning("No text to speak.")
+        return
     tts = gTTS(text=text, lang=output_language.lower())
     tts.save("output.mp3")
     st.audio("output.mp3", format='audio/mp3')
