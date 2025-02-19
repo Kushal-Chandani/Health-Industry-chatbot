@@ -51,23 +51,22 @@ else:
     st.error("Unsupported language pair. Please select English-Spanish or Spanish-English.")
     model_name = None
 
-original_transcript = ""
-translated_transcript = ""
+# Initialize session state variables
+if 'original_transcript' not in st.session_state:
+    st.session_state.original_transcript = ""
+if 'translated_transcript' not in st.session_state:
+    st.session_state.translated_transcript = ""
+if 'transcribing' not in st.session_state:
+    st.session_state.transcribing = False
 
 def update_transcripts():
-    nonlocal original_transcript, translated_transcript
     while st.session_state.transcribing:
         text = transcribe_audio()
         if text:
-            original_transcript += f"{text} "
+            st.session_state.original_transcript += f"{text} "
             translated_text = translate_text(text, model_name)
-            translated_transcript += f"{translated_text} "
-            st.session_state.original_transcript = original_transcript
-            st.session_state.translated_transcript = translated_transcript
-        time.sleep(1)
-
-if 'transcribing' not in st.session_state:
-    st.session_state.transcribing = False
+            st.session_state.translated_transcript += f"{translated_text} "
+            st.experimental_rerun()
 
 if st.button("Start Transcription"):
     st.session_state.transcribing = True
@@ -77,8 +76,8 @@ if st.button("Stop Transcription"):
     st.session_state.transcribing = False
 
 with st.spinner("Transcribing..."):
-    st.text_area("Original Transcript", value=st.session_state.get('original_transcript', ''), height=200, key="original")
-    st.text_area("Translated Transcript", value=st.session_state.get('translated_transcript', ''), height=200, key="translated")
+    st.text_area("Original Transcript", value=st.session_state.original_transcript, height=200, key="original")
+    st.text_area("Translated Transcript", value=st.session_state.translated_transcript, height=200, key="translated")
 
 def play_audio(text):
     tts = gTTS(text=text, lang=output_language.lower())
@@ -87,7 +86,7 @@ def play_audio(text):
     os.remove("output.mp3")
 
 if st.button("Speak Translated Text"):
-    play_audio(st.session_state.get('translated_transcript', ''))
+    play_audio(st.session_state.translated_transcript)
 
 # Add a section for error messages
 if st.session_state.get('error_message'):
