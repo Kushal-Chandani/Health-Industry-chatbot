@@ -13,16 +13,17 @@ from streamlit_extras.add_vertical_space import add_vertical_space
 custom_css = """
 <style>
 .stApp {
-    background-color: #f0f8ff;
+    background-color: #ffffff;
     font-family: 'Arial', sans-serif;
+    color: #000000;
 }
 .stSelectbox > div > div > div {
-    border: 2px solid #007bff;
+    border: 2px solid #000000;
     border-radius: 5px;
     padding: 5px;
 }
 .stButton > button {
-    background-color: #007bff;
+    background-color: #000000;
     color: white;
     border: none;
     border-radius: 5px;
@@ -31,15 +32,16 @@ custom_css = """
     margin: 5px;
 }
 .stButton > button:hover {
-    background-color: #0056b3;
+    background-color: #333333;
 }
 .stTextArea > div > div > textarea {
-    border: 2px solid #007bff;
+    border: 2px solid #000000;
     border-radius: 5px;
     font-size: 16px;
     margin: 10px 0;
     padding: 10px;
-    background-color: #ffffff;
+    background-color: #000000;
+    color: white;
 }
 .stAlert {
     margin-top: 20px;
@@ -51,7 +53,7 @@ st.markdown(custom_css, unsafe_allow_html=True)
 colored_header(
     label="Healthcare Translation Web App",
     description="Translate spoken input in real-time with accurate transcription and audio playback.",
-    color_name="blue-70"
+    color_name="black-70"
 )
 
 input_language = st.selectbox("Input Language", ["English", "Spanish"])
