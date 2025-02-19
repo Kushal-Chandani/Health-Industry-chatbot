@@ -2,6 +2,7 @@
 import streamlit as st
 import threading
 import time
+from queue import Queue
 from transcription import transcribe_audio
 from translation import translate_text
 from gtts import gTTS
@@ -85,13 +86,14 @@ if 'translated_transcript' not in st.session_state:
 if 'transcribing' not in st.session_state:
     st.session_state.transcribing = False
 
+# Queue for communication between threads
+queue = Queue()
+
 def update_transcripts():
     while st.session_state.transcribing:
         text = transcribe_audio()
         if text:
-            st.session_state.original_transcript += f"{text} "
-            translated_text = translate_text(text, model_name)
-            st.session_state.translated_transcript += f"{translated_text} "
+            queue.put(text)
             time.sleep(1)  # Sleep to avoid excessive reruns
 
 def start_transcription():
@@ -132,3 +134,11 @@ if st.button("Speak Translated Text"):
 # Add a section for error messages
 if st.session_state.get('error_message'):
     st.error(st.session_state.error_message)
+
+# Process the queue in the main thread
+while not queue.empty():
+    text = queue.get()
+    st.session_state.original_transcript += f"{text} "
+    translated_text = translate_text(text, model_name)
+    st.session_state.translated_transcript += f"{translated_text} "
+    st.experimental_rerun()
